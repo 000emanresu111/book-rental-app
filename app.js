@@ -2,6 +2,9 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const dotenv = require('dotenv')
 const authRoutes = require('./routes/authRoutes')
+const bookstoreRoutes = require('./routes/bookstoreRoutes')
+const bookRoutes = require('./routes/bookRoutes')
+
 dotenv.config()
 
 const app = express()
@@ -12,6 +15,8 @@ app.use(bodyParser.urlencoded({ extended: false }))
 
 // Routes
 app.use('/auth', authRoutes)
+app.use('/bookstores', bookstoreRoutes)
+app.use('/books', bookRoutes)
 
 // Error Handler
 app.use((err, req, res, next) => {
@@ -38,7 +43,7 @@ app.use((err, req, res, next) => {
 
 // Start the server
 const port = process.env.PORT
-app.listen(port, () => {
+app.listen(0, () => {
   console.log(`Server listening on port ${port}`)
 })
 

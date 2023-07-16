@@ -31,7 +31,7 @@ test('Correct user login returns a token', async (t) => {
     .send({ email: 'test@example.com', password: 'testpassword' })
 
   t.is(response.status, 200)
-  t.true(response.body.hasOwnProperty('token'))
+  t.true(Object.prototype.hasOwnProperty.call(response.body, 'token'))
 
   findOneStub.restore()
 })
