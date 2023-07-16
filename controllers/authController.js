@@ -15,8 +15,6 @@ const registerUser = async (req, res, next) => {
     const token = generateToken(user._id)
     res.status(201).json({ message: 'User registered successfully', token })
   } catch (error) {
-    console.error(error)
-    res.status(500).json({ message: 'Internal Server Error' })
     next(error)
   }
 }
