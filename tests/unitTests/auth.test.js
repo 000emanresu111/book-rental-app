@@ -6,7 +6,7 @@ const User = require('../../models/User')
 
 require('dotenv').config({ path: '.env' })
 
-test('authenticateUser middleware should set req.user with authenticated user', async (t) => {
+test('authenticateUser middleware sets req.user with authenticated user', async (t) => {
   const userId = 'user123'
   const token = jwt.sign({ userId }, process.env.JWT_SECRET)
   const req = {
@@ -30,7 +30,7 @@ test('authenticateUser middleware should set req.user with authenticated user', 
   User.findById.restore()
 })
 
-test('authenticateUser middleware should respond with Unauthorized if authorization header is missing', async (t) => {
+test('authenticateUser middleware responds with Unauthorized if authorization header is missing', async (t) => {
   const req = {
     headers: {}
   }
@@ -47,7 +47,7 @@ test('authenticateUser middleware should respond with Unauthorized if authorizat
   t.false(next.called)
 })
 
-test('authenticateUser middleware should respond with Unauthorized if token is invalid', async (t) => {
+test('authenticateUser middleware responds with Unauthorized if token is invalid', async (t) => {
   const req = {
     headers: {
       authorization: 'Bearer invalid_token'
@@ -66,7 +66,7 @@ test('authenticateUser middleware should respond with Unauthorized if token is i
   t.false(next.called)
 })
 
-test('authenticateUser middleware should respond with Unauthorized if token is missing "Bearer"', async (t) => {
+test('authenticateUser middleware responds with Unauthorized if token is missing "Bearer"', async (t) => {
   const req = {
     headers: {
       authorization: 'invalid_token'
@@ -85,7 +85,7 @@ test('authenticateUser middleware should respond with Unauthorized if token is m
   t.false(next.called)
 })
 
-test('authenticateUser middleware should respond with Unauthorized if token is expired', async (t) => {
+test('authenticateUser middleware responds with Unauthorized if token is expired', async (t) => {
   const userId = 'user123'
   const token = jwt.sign({ userId }, process.env.JWT_SECRET, { expiresIn: '0s' })
   const req = {
@@ -106,7 +106,7 @@ test('authenticateUser middleware should respond with Unauthorized if token is e
   t.false(next.called)
 })
 
-test('authenticateUser middleware should respond with Unauthorized if token signature is invalid', async (t) => {
+test('authenticateUser middleware responds with Unauthorized if token signature is invalid', async (t) => {
   const userId = 'user123'
   const token = jwt.sign({ userId }, 'invalid_secret')
   const req = {

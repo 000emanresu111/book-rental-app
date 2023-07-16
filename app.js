@@ -1,7 +1,7 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const dotenv = require('dotenv')
-
+const authRoutes = require('./routes/authRoutes')
 dotenv.config()
 
 const app = express()
@@ -11,7 +11,7 @@ app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 
 // Routes
-// app.use(routes)
+app.use('/auth', authRoutes)
 
 // Error Handler
 app.use((err, req, res, next) => {
@@ -34,6 +34,12 @@ app.use((err, req, res, next) => {
   }
 
   next(err)
+})
+
+// Start the server
+const port = process.env.PORT
+app.listen(port, () => {
+  console.log(`Server listening on port ${port}`)
 })
 
 module.exports = app

@@ -13,7 +13,7 @@ test('registerUser creates a new user and returns a JWT token', async (t) => {
     username: 'testuser',
     email: 'test@example.com',
     password: hashedPassword,
-    bookstoreId: 'bookstore123'
+    tenantId: 'bookstore123'
   })
 
   const saveStub = sinon.stub(User.prototype, 'save').resolves(user)
@@ -25,10 +25,11 @@ test('registerUser creates a new user and returns a JWT token', async (t) => {
       username: 'testuser',
       email: 'test@example.com',
       password: 'password123',
-      bookstoreId: 'bookstore123'
+      tenantId: 'bookstore123'
     }
   }
   const res = {
+    status: sinon.stub().returnsThis(),
     json: sinon.spy()
   }
   const next = sinon.spy()
@@ -37,7 +38,13 @@ test('registerUser creates a new user and returns a JWT token', async (t) => {
 
   t.true(User.prototype.save.calledOnce)
   t.true(bcrypt.hash.calledOnceWithExactly('password123', 10))
-  t.true(res.json.calledOnceWithExactly({ token: 'jwt_token' }))
+  t.true(res.status.calledOnceWithExactly(201))
+  t.deepEqual(res.json.args[0], [
+    {
+      message: 'User registered successfully',
+      token: 'jwt_token'
+    }
+  ])
   t.false(next.called)
 
   saveStub.restore()

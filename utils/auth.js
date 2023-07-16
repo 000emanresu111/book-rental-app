@@ -7,11 +7,14 @@ const authenticateUser = async (req, res, next) => {
     if (!token) {
       throw new Error('Authorization token missing')
     }
+
     const decodedToken = jwt.verify(token, process.env.JWT_SECRET)
+
     const user = await User.findById(decodedToken.userId)
     if (!user) {
       throw new Error('Invalid user')
     }
+
     req.user = user
     next()
   } catch (error) {

@@ -4,13 +4,19 @@ const User = require('../models/User')
 
 const registerUser = async (req, res, next) => {
   try {
-    const { username, email, password, bookstoreId } = req.body
+    const { username, email, password, tenantId } = req.body
+
     const hashedPassword = await bcrypt.hash(password, 10)
-    const user = new User({ username, email, password: hashedPassword, bookstoreId })
+
+    const user = new User({ username, email, password: hashedPassword, tenantId })
+
     await user.save()
+
     const token = generateToken(user._id)
-    res.json({ token })
+    res.status(201).json({ message: 'User registered successfully', token })
   } catch (error) {
+    console.error(error)
+    res.status(500).json({ message: 'Internal Server Error' })
     next(error)
   }
 }
@@ -39,7 +45,5 @@ const loginUser = async (req, res, next) => {
 const generateToken = (userId) => {
   return jwt.sign({ userId }, process.env.JWT_SECRET, { expiresIn: '1h' })
 }
-
-module.exports = { loginUser, generateToken }
 
 module.exports = { registerUser, loginUser, generateToken }
