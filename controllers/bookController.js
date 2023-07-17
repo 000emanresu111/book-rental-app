@@ -92,4 +92,30 @@ const returnBook = async (req, res, next) => {
   }
 }
 
-module.exports = { getAllBooks, rentBook, returnBook }
+const searchBooks = async (req, res, next) => {
+  try {
+    const { title, author } = req.query
+
+    if (!title && !author) {
+      return res.status(400).json({ message: 'Please provide a title or author for the search' })
+    }
+
+    const query = {}
+
+    if (title) {
+      query.title = { $regex: title, $options: 'i' }
+    }
+
+    if (author) {
+      query.author = { $regex: author, $options: 'i' }
+    }
+
+    const searchResults = await Book.find(query)
+
+    res.json(searchResults)
+  } catch (error) {
+    next(error)
+  }
+}
+
+module.exports = { getAllBooks, rentBook, returnBook, searchBooks }
