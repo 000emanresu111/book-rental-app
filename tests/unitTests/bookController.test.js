@@ -55,6 +55,7 @@ test('rentBook decreases the quantity of a book by 1', async (t) => {
     bookstoreId: userTenantId
   }
 
+  const findOneStub = sinon.stub(Book, 'findOne').resolves(book)
   const findOneAndUpdateStub = sinon.stub(Book, 'findOneAndUpdate').resolves(book)
   const startSessionStub = sinon.stub(Book, 'startSession').resolves({
     startTransaction: sinon.stub(),
@@ -74,6 +75,7 @@ test('rentBook decreases the quantity of a book by 1', async (t) => {
 
   await rentBook(req, res, next)
 
+  t.true(findOneStub.calledOnceWithExactly({ _id: bookId, bookstoreId: userTenantId }))
   t.true(findOneAndUpdateStub.calledOnceWithExactly(
     { _id: bookId, bookstoreId: userTenantId, quantity: 1 },
     { $inc: { quantity: -1 } },
@@ -83,6 +85,50 @@ test('rentBook decreases the quantity of a book by 1', async (t) => {
   t.false(next.called)
 
   findOneAndUpdateStub.restore()
+  startSessionStub.restore()
+})
+
+test('user cannot rent a book if all copies are rented out', async (t) => {
+  const bookId = new ObjectId()
+  const userTenantId = 'userTenant1'
+
+  const book = {
+    _id: bookId,
+    title: 'Book 1',
+    author: 'Author 1',
+    quantity: 0,
+    bookstoreId: userTenantId
+  }
+
+  const findOneStub = sinon.stub(Book, 'findOne').resolves(book)
+
+  findOneStub.withArgs({ _id: bookId, bookstoreId: userTenantId }).resolves(book)
+
+  const startSessionStub = sinon.stub(Book, 'startSession').resolves({
+    startTransaction: sinon.stub(),
+    commitTransaction: sinon.stub(),
+    abortTransaction: sinon.stub(),
+    endSession: sinon.stub()
+  })
+
+  const req = {
+    params: { id: bookId },
+    user: { tenantId: userTenantId }
+  }
+  const res = {
+    status: sinon.stub().returnsThis(),
+    json: sinon.spy()
+  }
+  const next = sinon.spy()
+
+  await rentBook(req, res, next)
+
+  t.true(findOneStub.calledOnceWithExactly({ _id: bookId, bookstoreId: userTenantId }))
+  t.true(res.status.calledOnceWith(400))
+  t.true(res.json.calledOnceWith({ message: 'Book out of stock' }))
+  t.false(next.called)
+
+  findOneStub.restore()
   startSessionStub.restore()
 })
 

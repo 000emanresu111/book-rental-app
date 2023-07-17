@@ -11,12 +11,22 @@ const getAllBooks = async (req, res, next) => {
 
 const rentBook = async (req, res, next) => {
   try {
-    const bookId = req.params.id
-    const userTenantId = req.user.tenantId
-
     // Using transactions and locks to prevent race conditions
     const session = await Book.startSession()
     session.startTransaction()
+
+    const bookId = req.params.id
+    const userTenantId = req.user.tenantId
+
+    const book = await Book.findOne({ _id: bookId, bookstoreId: userTenantId })
+
+    if (!book) {
+      return res.status(404).json({ message: 'Book not found' })
+    }
+
+    if (book.quantity === 0) {
+      return res.status(400).json({ message: 'Book out of stock' })
+    }
 
     try {
       // findOneAndUpdate() is atomic: the document can't change between when MongoDB finds the document and when MongoDB applies the update operation
@@ -45,6 +55,7 @@ const rentBook = async (req, res, next) => {
     next(error)
   }
 }
+
 const returnBook = async (req, res, next) => {
   try {
     const book = await Book.findById(req.params.id)
