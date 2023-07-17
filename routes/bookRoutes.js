@@ -1,5 +1,5 @@
 const express = require('express')
-const { getAllBooks, rentBook, returnBook } = require('../controllers/bookController')
+const { getAllBooks, rentBook, returnBook, searchBooks } = require('../controllers/bookController')
 const { authenticateUser } = require('../utils/auth')
 
 const router = express.Router()
