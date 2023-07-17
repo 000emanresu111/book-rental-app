@@ -1,3 +1,5 @@
+process.env.NODE_ENV = 'testing'
+
 const test = require('ava')
 const supertest = require('supertest')
 const sinon = require('sinon')

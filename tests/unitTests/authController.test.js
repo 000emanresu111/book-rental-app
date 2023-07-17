@@ -1,3 +1,5 @@
+process.env.NODE_ENV = 'testing'
+
 const test = require('ava')
 const sinon = require('sinon')
 const bcrypt = require('bcrypt')

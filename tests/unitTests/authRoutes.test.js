@@ -1,4 +1,6 @@
 const test = require('ava')
+process.env.NODE_ENV = 'testing'
+
 const bcrypt = require('bcrypt')
 const supertest = require('supertest')
 const sinon = require('sinon')

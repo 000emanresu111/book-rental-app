@@ -1,4 +1,6 @@
 const test = require('ava')
+process.env.NODE_ENV = 'testing'
+
 const jwt = require('jsonwebtoken')
 const supertest = require('supertest')
 const app = require('../../app')
