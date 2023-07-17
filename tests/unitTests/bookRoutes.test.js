@@ -1,12 +1,12 @@
 const test = require('ava')
-process.env.NODE_ENV = 'testing'
-
 const jwt = require('jsonwebtoken')
 const supertest = require('supertest')
-const app = require('../../app')
 const Book = require('../../models/Book')
 const sinon = require('sinon')
 const User = require('../../models/User')
+
+process.env.NODE_ENV = 'testing'
+const app = require('../../app')
 
 test('GET /books returns all books for an authenticated user', async (t) => {
   const user = {

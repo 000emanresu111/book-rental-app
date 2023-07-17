@@ -1,10 +1,10 @@
-process.env.NODE_ENV = 'testing'
-
 const test = require('ava')
 const jwt = require('jsonwebtoken')
 const sinon = require('sinon')
 const { authenticateUser } = require('../../utils/auth')
 const User = require('../../models/User')
+
+process.env.NODE_ENV = 'testing'
 
 require('dotenv').config({ path: '.env' })
 

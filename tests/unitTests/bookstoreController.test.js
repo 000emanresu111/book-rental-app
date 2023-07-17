@@ -1,9 +1,9 @@
-process.env.NODE_ENV = 'testing'
-
 const test = require('ava')
 const sinon = require('sinon')
 const { getAllBookstores } = require('../../controllers/bookstoreController')
 const Bookstore = require('../../models/Bookstore')
+
+process.env.NODE_ENV = 'testing'
 
 test('getAllBookstores returns all bookstores', async (t) => {
   const bookstores = [

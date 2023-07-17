@@ -1,10 +1,10 @@
 const test = require('ava')
-process.env.NODE_ENV = 'testing'
-
 const bcrypt = require('bcrypt')
 const supertest = require('supertest')
 const sinon = require('sinon')
 const User = require('../../models/User')
+
+process.env.NODE_ENV = 'testing'
 const app = require('../../app')
 
 test('Correct user registration returns 201 status code', async (t) => {

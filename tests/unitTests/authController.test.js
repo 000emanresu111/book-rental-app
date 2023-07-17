@@ -1,11 +1,11 @@
-process.env.NODE_ENV = 'testing'
-
 const test = require('ava')
 const sinon = require('sinon')
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const { registerUser, loginUser } = require('../../controllers/authController')
 const User = require('../../models/User')
+
+process.env.NODE_ENV = 'testing'
 
 require('dotenv').config({ path: '.env' })
 

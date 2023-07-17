@@ -31,10 +31,10 @@ app.use('/books', bookRoutes)
 app.use(errorHandler)
 
 // Start the server
-const port = process.env.NODE_ENV !== 'testing' ? process.env.PORT : Math.floor(Math.random() * 10000) + 30000
+const port = process.env.NODE_ENV === 'testing' ? undefined : process.env.PORT
 
-app.listen(port, () => {
-  console.log(`Server listening on port ${port}`)
+const server = app.listen(port, () => {
+  console.log(`Server listening on port ${server.address().port}`)
 })
 
 module.exports = app

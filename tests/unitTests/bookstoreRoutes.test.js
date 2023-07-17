@@ -1,9 +1,9 @@
-process.env.NODE_ENV = 'testing'
-
 const test = require('ava')
 const supertest = require('supertest')
 const sinon = require('sinon')
 const Bookstore = require('../../models/Bookstore')
+
+process.env.NODE_ENV = 'testing'
 const app = require('../../app')
 
 test('GET /bookstores returns all bookstores', async (t) => {
