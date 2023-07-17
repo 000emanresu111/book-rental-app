@@ -1,6 +1,7 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const dotenv = require('dotenv')
+const mongoose = require('mongoose')
 const authRoutes = require('./routes/authRoutes')
 const bookstoreRoutes = require('./routes/bookstoreRoutes')
 const bookRoutes = require('./routes/bookRoutes')
@@ -12,6 +13,19 @@ const app = express()
 // Middleware
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
+
+// MongoDB Connection
+const dbURI = process.env.MONGODB_URI
+
+const connectToMongoDB = async () => {
+  try {
+    await mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
+    console.log('Connected to MongoDB')
+  } catch (error) {
+    console.error('Failed to connect to MongoDB:', error)
+  }
+}
+connectToMongoDB()
 
 // Routes
 app.use('/auth', authRoutes)
@@ -43,7 +57,7 @@ app.use((err, req, res, next) => {
 
 // Start the server
 const port = process.env.PORT
-app.listen(0, () => {
+app.listen(3000, () => {
   console.log(`Server listening on port ${port}`)
 })
 
