@@ -10,6 +10,10 @@ const Rental = require('../models/Rental')
 process.env.NODE_ENV = 'testing'
 const app = require('../app')
 
+test.afterEach.always(() => {
+  sinon.restore()
+})
+
 const user = {
   username: 'testuser1',
   email: 'testuser1@example.com',
@@ -22,11 +26,10 @@ const userCredentials = {
   password: 'testpassword1'
 }
 
-const saveStub = sinon.stub(User.prototype, 'save').resolves()
-const bookSaveStub = sinon.stub(Book.prototype, 'save').resolves()
-
 test.serial('Integration Test: Register, Login, Rent, and Return', async (t) => {
   const findOneExistingUserStub = sinon.stub(User, 'findOne').resolves(null)
+
+  const saveStub = sinon.stub(User.prototype, 'save').resolves()
 
   // Register a new user
   const registerResponse = await supertest(app)
@@ -59,6 +62,7 @@ test.serial('Integration Test: Register, Login, Rent, and Return', async (t) => 
   const token = loginResponse.body.token
 
   t.truthy(token)
+  t.true(findOneUserStub.calledOnce)
 
   // Rent a book
   const book = new Book({
@@ -69,8 +73,8 @@ test.serial('Integration Test: Register, Login, Rent, and Return', async (t) => 
     bookstoreId: user.tenantId
   })
 
+  const bookSaveStub = sinon.stub(Book.prototype, 'save').resolves()
   const findOneBookStub = sinon.stub(Book, 'findOne').resolves(book)
-  // const saveBookStub = sinon.stub(book, 'save').resolves(book)
   const startSessionStub = sinon.stub(Book, 'startSession').resolves({
     startTransaction: sinon.stub(),
     commitTransaction: sinon.stub(),
@@ -90,6 +94,11 @@ test.serial('Integration Test: Register, Login, Rent, and Return', async (t) => 
 
   t.deepEqual(new Book(rentResponse.body), book)
   t.is(book.quantity, 4)
+  t.true(bookSaveStub.calledOnce)
+  t.true(findOneBookStub.calledOnce)
+  t.true(startSessionStub.calledOnce)
+  t.true(rentalSaveStub.calledOnce)
+  t.true(activeRentalStub.calledOnce)
 
   // Return the rented book
   const returnResponse = await supertest(app)
@@ -101,9 +110,4 @@ test.serial('Integration Test: Register, Login, Rent, and Return', async (t) => 
 
   t.deepEqual(new Book(returnResponse.body), book)
   t.is(book.quantity, 5)
-
-  saveStub.restore()
-  bookSaveStub.restore()
-  findOneUserStub.restore()
-  findOneBookStub.restore()
 })

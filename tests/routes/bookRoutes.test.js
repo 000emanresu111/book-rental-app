@@ -47,7 +47,7 @@ test.serial('POST /books/:bookId/rent shows the rented book and decrease its qua
 
   const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET)
 
-  const findByIdStub = sinon.stub(User, 'findById').resolves(user)
+  sinon.stub(User, 'findById').resolves(user)
 
   const books = [
     { title: 'Book 1', author: 'Author 1', bookstoreId: user.tenantId },
@@ -146,7 +146,7 @@ test.serial('POST /books/:bookId/return shows the returned book and increases it
   saveStub.restore()
 })
 
-test.serial('GET /books/search ...', async (t) => {
+test.serial('GET /books/search returns books found via regex query', async (t) => {
   const user = {
     userId: 'user123',
     tenantId: 'tenant123'

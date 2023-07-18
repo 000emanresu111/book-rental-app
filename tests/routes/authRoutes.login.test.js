@@ -20,15 +20,6 @@ test.afterEach(() => {
   findOneStub.restore()
 })
 
-test.serial('Correct user registration returns 201 status code', async (t) => {
-  const response = await supertest(app)
-    .post('/auth/register')
-    .send({ username: 'usertest', email: 'user@example.com', password: 'password', tenantId: '123' })
-
-  t.is(response.status, 201)
-  t.true(saveStub.calledOnce)
-})
-
 test.serial('Correct user login returns a token', async (t) => {
   const testUser = new User({
     email: 'test@example.com',

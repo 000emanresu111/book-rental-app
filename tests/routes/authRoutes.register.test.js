@@ -1,5 +1,4 @@
 const test = require('ava')
-const bcrypt = require('bcrypt')
 const supertest = require('supertest')
 const sinon = require('sinon')
 const User = require('../../models/User')
