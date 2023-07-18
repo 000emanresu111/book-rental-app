@@ -19,7 +19,7 @@ const registerUser = async (req, res, next) => {
     await user.save()
 
     const token = generateToken(user._id)
-    
+
     res.status(201).json({ message: 'User registered successfully', token })
   } catch (error) {
     next(error)

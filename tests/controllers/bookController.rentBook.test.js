@@ -67,7 +67,7 @@ test.serial('rentBook decreases the quantity of a book by 1', async (t) => {
   const activeRentalStub = sinon.stub(Rental, 'findOne').resolves(null)
 
   const req = {
-    params: { id: bookId },
+    params: { bookId },
     user: { tenantId: userTenantId, _id: 'user1' }
   }
   const res = {
@@ -122,7 +122,7 @@ test.serial('user cannot rent a book if all copies are rented out', async (t) =>
   })
 
   const req = {
-    params: { id: bookId },
+    params: { bookId },
     user: { tenantId: userTenantId }
   }
   const res = {
@@ -146,13 +146,13 @@ test.serial('user cannot rent more than one copy of the same book at the same ti
   const bookId = new ObjectId()
   const userTenantId = 'userTenant1'
 
-  const book = {
+  const book = new Book({
     _id: bookId,
     title: 'Book 1',
     author: 'Author 1',
     quantity: 5,
     bookstoreId: userTenantId
-  }
+  })
 
   const findOneStub = sinon.stub(Book, 'findOne').resolves(book)
   const findOneAndUpdateStub = sinon.stub(Book, 'findOneAndUpdate').resolves(book)
@@ -167,7 +167,7 @@ test.serial('user cannot rent more than one copy of the same book at the same ti
   })
 
   const req = {
-    params: { id: bookId },
+    params: { bookId },
     user: { tenantId: userTenantId, _id: 'user1' } // Mock the user ID
   }
   const res = {

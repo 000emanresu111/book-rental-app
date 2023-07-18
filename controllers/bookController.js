@@ -1,3 +1,4 @@
+const ObjectId = require('mongoose').Types.ObjectId
 const Book = require('../models/Book')
 const Rental = require('../models/Rental')
 
@@ -16,7 +17,8 @@ const rentBook = async (req, res, next) => {
     const session = await Book.startSession()
     session.startTransaction()
 
-    const bookId = req.params.id
+    const bookId = req.params.bookId
+
     const userTenantId = req.user.tenantId
 
     const book = await Book.findOne({ _id: bookId, bookstoreId: userTenantId })
