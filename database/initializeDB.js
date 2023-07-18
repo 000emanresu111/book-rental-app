@@ -12,19 +12,19 @@ require('dotenv').config({ path: '.env' })
 const dbURI = process.env.MONGODB_URI
 
 User.createCollection().then(function (collection) {
-  logger.info('Collection is created!');
+  logger.info('Collection is created!')
 })
 
 Book.createCollection().then(function (collection) {
-  logger.info('Collection is created!');
+  logger.info('Collection is created!')
 })
 
 Bookstore.createCollection().then(function (collection) {
-  logger.info('Collection is created!');
+  logger.info('Collection is created!')
 })
 
 Rental.createCollection().then(function (collection) {
-  logger.info('Collection is created!');
+  logger.info('Collection is created!')
 })
 
 const initializeData = async () => {
