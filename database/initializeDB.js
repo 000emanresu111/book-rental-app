@@ -1,6 +1,7 @@
 const User = require('../models/User')
 const Book = require('../models/Book')
 const Bookstore = require('../models/Bookstore')
+const Rental = require('../models/Rental')
 const mongoose = require('mongoose')
 const errorHandler = require('../middlewares/errorHandler')
 const connectToMongoDB = require('./db')
@@ -9,6 +10,22 @@ const { logger } = require('../middlewares/logger')
 require('dotenv').config({ path: '.env' })
 
 const dbURI = process.env.MONGODB_URI
+
+User.createCollection().then(function (collection) {
+  logger.info('Collection is created!');
+})
+
+Book.createCollection().then(function (collection) {
+  logger.info('Collection is created!');
+})
+
+Bookstore.createCollection().then(function (collection) {
+  logger.info('Collection is created!');
+})
+
+Rental.createCollection().then(function (collection) {
+  logger.info('Collection is created!');
+})
 
 const initializeData = async () => {
   try {
