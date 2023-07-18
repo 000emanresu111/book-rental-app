@@ -7,8 +7,9 @@ const User = require('../../models/User')
 process.env.NODE_ENV = 'testing'
 const app = require('../../app')
 
-test('Correct user registration returns 201 status code', async (t) => {
+test.serial('Correct user registration returns 201 status code', async (t) => {
   const saveStub = sinon.stub(User.prototype, 'save').resolves()
+  const findOneStub = sinon.stub(User, 'findOne').resolves(null)
 
   const response = await supertest(app)
     .post('/auth/register')
@@ -17,10 +18,11 @@ test('Correct user registration returns 201 status code', async (t) => {
   t.is(response.status, 201)
   t.true(saveStub.calledOnce)
 
+  findOneStub.restore()
   saveStub.restore()
 })
 
-test('Correct user login returns a token', async (t) => {
+test.serial('Correct user login returns a token', async (t) => {
   const testUser = new User({
     email: 'test@example.com',
     password: await bcrypt.hash('testpassword', 10)

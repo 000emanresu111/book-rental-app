@@ -25,7 +25,9 @@ const userCredentials = {
 const saveStub = sinon.stub(User.prototype, 'save').resolves()
 const bookSaveStub = sinon.stub(Book.prototype, 'save').resolves()
 
-test('Integration Test: Register, Login, Rent, and Return', async (t) => {
+test.serial('Integration Test: Register, Login, Rent, and Return', async (t) => {
+  const findOneExistingUserStub = sinon.stub(User, 'findOne').resolves(null)
+
   // Register a new user
   const registerResponse = await supertest(app)
     .post('/auth/register')
@@ -36,6 +38,8 @@ test('Integration Test: Register, Login, Rent, and Return', async (t) => {
 
   t.is(registerResponse.body.message, 'User registered successfully')
   t.true(saveStub.calledOnce)
+
+  findOneExistingUserStub.restore()
 
   // Login with the registered user credentials
   const testUser = new User({

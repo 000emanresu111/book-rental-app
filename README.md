@@ -12,11 +12,21 @@ POST http://localhost:3000/auth/register
 
 ```json
 {
-"username": "newuser",
-"email": "newuser@example.com",
-"password": "newpassword",
-"tenantId": "newtenant"
+"username": "user42",
+"email": "user42@example.com",
+"password": "user42_password",
+"tenantId": "user42_bookstore"
 }
+```
+
+```bash
+curl -X POST -H "Content-Type: application/json" -d '{
+  "username": "user42",
+  "email": "user42@example.com",
+  "password": "user42_password",
+  "tenantId": "user42_bookstore"
+}' http://localhost:3000/auth/register
+
 ```
  
 #### Example response

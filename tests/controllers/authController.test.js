@@ -22,6 +22,8 @@ test.serial('registerUser creates a new user and returns a JWT token', async (t)
   const hashStub = sinon.stub(bcrypt, 'hash').resolves(hashedPassword)
   const signStub = sinon.stub(jwt, 'sign').returns('jwt_token')
 
+  const findOneStub = sinon.stub(User, 'findOne').resolves(null)
+
   const req = {
     body: {
       username: 'testuser',
@@ -52,6 +54,7 @@ test.serial('registerUser creates a new user and returns a JWT token', async (t)
   saveStub.restore()
   hashStub.restore()
   signStub.restore()
+  findOneStub.restore()
 })
 
 test.serial('loginUser should return a JWT token for a valid user', async (t) => {
