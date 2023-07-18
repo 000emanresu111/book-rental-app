@@ -5,11 +5,11 @@ const jwt = require('jsonwebtoken')
 const { registerUser, loginUser } = require('../../controllers/authController')
 const User = require('../../models/User')
 
-process.env.NODE_ENV = 'testing'
-
 require('dotenv').config({ path: '.env' })
 
-test('registerUser creates a new user and returns a JWT token', async (t) => {
+process.env.NODE_ENV = 'testing'
+
+test.serial('registerUser creates a new user and returns a JWT token', async (t) => {
   const hashedPassword = await bcrypt.hash('password123', 10)
   const user = new User({
     username: 'testuser',
@@ -54,7 +54,7 @@ test('registerUser creates a new user and returns a JWT token', async (t) => {
   signStub.restore()
 })
 
-test('loginUser should return a JWT token for a valid user', async (t) => {
+test.serial('loginUser should return a JWT token for a valid user', async (t) => {
   const user = new User({
     email: 'test@example.com',
     password: await bcrypt.hash('password123', 10)
@@ -80,7 +80,7 @@ test('loginUser should return a JWT token for a valid user', async (t) => {
   t.true(User.findOne.calledOnce)
   t.true(User.findOne.calledWithExactly({ email: 'test@example.com' }))
   t.true(bcrypt.compare.calledOnceWithExactly('password123', user.password))
-  t.true(jwt.sign.calledOnceWithExactly({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' }))
+  t.true(jwt.sign.calledOnceWithExactly({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '1d' }))
   t.true(res.json.calledOnceWithExactly({ token: 'jwt_token' }))
   t.false(next.called)
 

@@ -1,19 +1,17 @@
 const test = require('ava')
 const sinon = require('sinon')
 const { ObjectId } = require('mongoose').Types
-const { getAllBooks, rentBook, returnBook } = require('../../controllers/bookController')
+const { getAllBooks, rentBook } = require('../../controllers/bookController')
 const Book = require('../../models/Book')
 const Rental = require('../../models/Rental')
 
 process.env.NODE_ENV = 'testing'
 
-let findByIdStub
-
 test.afterEach.always(() => {
   sinon.restore()
 })
 
-test('getAllBooks returns all books for a specific bookstore', async (t) => {
+test.serial('getAllBooks returns all books for a specific bookstore', async (t) => {
   const books = [
     { _id: '1', title: 'Book 1', author: 'Author 1', quantity: 5, bookstoreId: '123' },
     { _id: '2', title: 'Book 2', author: 'Author 2', quantity: 3, bookstoreId: '123' }
@@ -44,7 +42,7 @@ test('getAllBooks returns all books for a specific bookstore', async (t) => {
   findStub.restore()
 })
 
-test('rentBook decreases the quantity of a book by 1', async (t) => {
+test.serial('rentBook decreases the quantity of a book by 1', async (t) => {
   const bookId = new ObjectId()
   const userTenantId = 'userTenant1'
 
@@ -100,7 +98,7 @@ test('rentBook decreases the quantity of a book by 1', async (t) => {
   activeRentalStub.restore()
 })
 
-test('user cannot rent a book if all copies are rented out', async (t) => {
+test.serial('user cannot rent a book if all copies are rented out', async (t) => {
   const bookId = new ObjectId()
   const userTenantId = 'userTenant1'
 
@@ -144,7 +142,7 @@ test('user cannot rent a book if all copies are rented out', async (t) => {
   startSessionStub.restore()
 })
 
-test('user cannot rent more than one copy of the same book at the same time', async (t) => {
+test.serial('user cannot rent more than one copy of the same book at the same time', async (t) => {
   const bookId = new ObjectId()
   const userTenantId = 'userTenant1'
 
@@ -192,7 +190,7 @@ test('user cannot rent more than one copy of the same book at the same time', as
   startSessionStub.restore()
 })
 
-test('race conditions are handled when multiple users attempt to rent the last copy of a book simultaneously', async (t) => {
+test.serial('race conditions are handled when multiple users attempt to rent the last copy of a book simultaneously', async (t) => {
   const bookId = new ObjectId()
   const userTenantId = 'userTenant1'
 
@@ -248,39 +246,4 @@ test('race conditions are handled when multiple users attempt to rent the last c
   activeRentalStub.restore()
   startSessionStub.restore()
   sinon.assert.called(res.json)
-})
-
-test('returnBook should increase the quantity of a book by 1', async (t) => {
-  const bookId = '1'
-  const book = {
-    _id: bookId,
-    title: 'Book 1',
-    author: 'Author 1',
-    quantity: 5,
-    bookstoreId: '123',
-    save: sinon.stub().resolves()
-  }
-
-  findByIdStub = sinon.stub(Book, 'findById')
-  findByIdStub.withArgs(bookId).resolves(book)
-
-  const req = {
-    params: {
-      id: bookId
-    }
-  }
-
-  const res = {
-    json: sinon.spy()
-  }
-
-  const next = sinon.spy()
-
-  await returnBook(req, res, next)
-
-  t.true(findByIdStub.calledOnceWithExactly(bookId))
-  t.true(book.save.calledOnce)
-  t.is(book.quantity, 6)
-
-  findByIdStub.restore()
 })

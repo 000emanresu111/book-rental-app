@@ -41,7 +41,7 @@ const loginUser = async (req, res, next) => {
 }
 
 const generateToken = (userId) => {
-  return jwt.sign({ userId }, process.env.JWT_SECRET, { expiresIn: '1h' })
+  return jwt.sign({ userId }, process.env.JWT_SECRET, { expiresIn: '1d' })
 }
 
 module.exports = { registerUser, loginUser, generateToken }
