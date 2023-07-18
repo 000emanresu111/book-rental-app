@@ -8,20 +8,20 @@ process.env.NODE_ENV = 'testing'
 const app = require('../app')
 
 const registrationInfo = {
-  username: 'testuser',
-  email: 'testuser@example.com',
-  password: 'testpassword',
-  tenantId: '123'
+  username: 'testuser1',
+  email: 'testuser1@example.com',
+  password: 'testpassword1',
+  tenantId: '1234'
 }
 
 const userCredentials = {
-  email: 'testuser@example.com',
-  password: 'testpassword'
+  email: 'testuser1@example.com',
+  password: 'testpassword1'
 }
 
 const saveStub = sinon.stub(User.prototype, 'save').resolves()
 
-test.serial('Integration Test: Register, Login, Rent, and Return', async (t) => {
+test('Integration Test: Register, Login, Rent, and Return', async (t) => {
   // Register a new user
   const registerResponse = await supertest(app)
     .post('/auth/register')
@@ -35,8 +35,8 @@ test.serial('Integration Test: Register, Login, Rent, and Return', async (t) => 
 
   // Login with the registered user credentials
   const testUser = new User({
-    email: 'test@example.com',
-    password: await bcrypt.hash('testpassword', 10)
+    email: 'testuser1@example.com',
+    password: await bcrypt.hash('testpassword1', 10)
   })
 
   const findOneStub = sinon.stub(User, 'findOne').resolves(testUser)

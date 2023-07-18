@@ -29,7 +29,6 @@ const rentBook = async (req, res, next) => {
       return res.status(400).json({ message: 'Book out of stock' })
     }
 
-    // Check if the user already has an active rental for the same book
     const activeRental = await Rental.findOne({
       userId: req.user._id,
       bookId: book._id,
@@ -41,19 +40,9 @@ const rentBook = async (req, res, next) => {
     }
 
     try {
-      // findOneAndUpdate() is atomic: the document can't change between when MongoDB finds the document and when MongoDB applies the update operation
-      const updatedBook = await Book.findOneAndUpdate(
-        { _id: bookId, bookstoreId: userTenantId, quantity: 1 },
-        { $inc: { quantity: -1 } },
-        { new: true, session }
-      )
-
-      if (!updatedBook) {
-        await session.abortTransaction()
-        session.endSession()
-        return res.status(404).json({ message: 'Book not found or out of stock' })
-      }
-
+      book.quantity -= 1
+      await book.save()
+     
       const rental = new Rental({
         userId: req.user._id,
         bookId: book._id
@@ -64,7 +53,7 @@ const rentBook = async (req, res, next) => {
       await session.commitTransaction()
       session.endSession()
 
-      res.json(updatedBook)
+      res.json(book)
     } catch (error) {
       await session.abortTransaction()
       session.endSession()
@@ -74,6 +63,7 @@ const rentBook = async (req, res, next) => {
     next(error)
   }
 }
+
 
 const returnBook = async (req, res, next) => {
   try {

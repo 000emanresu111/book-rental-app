@@ -46,16 +46,16 @@ test.serial('rentBook decreases the quantity of a book by 1', async (t) => {
   const bookId = new ObjectId()
   const userTenantId = 'userTenant1'
 
-  const book = {
+  const book = new Book({
     _id: bookId,
     title: 'Book 1',
     author: 'Author 1',
     quantity: 5,
     bookstoreId: userTenantId
-  }
+  })
 
   const findOneStub = sinon.stub(Book, 'findOne').resolves(book)
-  const findOneAndUpdateStub = sinon.stub(Book, 'findOneAndUpdate').resolves(book)
+  const saveStub = sinon.stub(book, 'save').resolves(book)
   const startSessionStub = sinon.stub(Book, 'startSession').resolves({
     startTransaction: sinon.stub(),
     commitTransaction: sinon.stub(),
@@ -63,19 +63,16 @@ test.serial('rentBook decreases the quantity of a book by 1', async (t) => {
     endSession: sinon.stub()
   })
 
-  const rentalSaveStub = sinon.stub(Rental.prototype, 'save').callsFake(async function () {
-    this._id = new ObjectId() // Set a mock rental ID
-    return this
-  })
-
-  const activeRentalStub = sinon.stub(Rental, 'findOne').resolves(null) // Mock no active rental
+  const rentalSaveStub = sinon.stub(Rental.prototype, 'save').resolves(new Rental())
+  const activeRentalStub = sinon.stub(Rental, 'findOne').resolves(null)
 
   const req = {
     params: { id: bookId },
-    user: { tenantId: userTenantId, _id: 'user1' } // Mock the user ID
+    user: { tenantId: userTenantId, _id: 'user1' }
   }
   const res = {
-    json: sinon.spy()
+    json: sinon.spy(),
+    status: sinon.stub().returnsThis()
   }
   const next = sinon.spy()
 
@@ -87,12 +84,15 @@ test.serial('rentBook decreases the quantity of a book by 1', async (t) => {
     bookId: book._id,
     returnDate: null
   }))
-  t.true(rentalSaveStub.calledOnce) // Verify that the rental was saved
+  t.true(rentalSaveStub.calledOnce)
   t.true(res.json.calledOnceWithExactly(book))
   t.false(next.called)
+  t.true(saveStub.calledOnce)
+
+  t.is(book.quantity, 4) // Check if the quantity is decreased by 1
 
   findOneStub.restore()
-  findOneAndUpdateStub.restore()
+  saveStub.restore()
   startSessionStub.restore()
   rentalSaveStub.restore()
   activeRentalStub.restore()
@@ -194,21 +194,19 @@ test.serial('race conditions are handled when multiple users attempt to rent the
   const bookId = new ObjectId()
   const userTenantId = 'userTenant1'
 
-  const book = {
+  const book = new Book({
     _id: bookId,
     title: 'Book 1',
     author: 'Author 1',
     quantity: 1,
     bookstoreId: userTenantId
-  }
+  })
 
   const findOneStub = sinon.stub(Book, 'findOne')
   findOneStub.onFirstCall().resolves(book) // Simulate the book being found
   findOneStub.onSecondCall().resolves(null) // Simulate the book not being found
 
-  const findOneAndUpdateStub = sinon.stub(Book, 'findOneAndUpdate')
-  findOneAndUpdateStub.onFirstCall().resolves(book) // Simulate the current user successfully renting the book
-  findOneAndUpdateStub.onSecondCall().resolves(null) // Simulate another user attempting to rent the book
+  const saveStub = sinon.stub(book, 'save').resolves(book)
 
   const activeRentalStub = sinon.stub(Rental, 'findOne')
   activeRentalStub.onFirstCall().resolves(null) // Simulate no active rental for the current user
@@ -238,11 +236,10 @@ test.serial('race conditions are handled when multiple users attempt to rent the
 
   t.true(findOneStub.calledTwice)
   t.true(res.status.calledWith(404))
-  t.true(findOneAndUpdateStub.calledOnce)
   t.true(activeRentalStub.calledOnce)
 
   findOneStub.restore()
-  findOneAndUpdateStub.restore()
+  saveStub.restore()
   activeRentalStub.restore()
   startSessionStub.restore()
   sinon.assert.called(res.json)
