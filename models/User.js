@@ -4,7 +4,6 @@ const UserSchema = new mongoose.Schema({
   username: {
     type: String,
     required: true,
-    unique: true,
     validate: {
       validator: function (value) {
         // checking if the username contains only alphanumeric characters
