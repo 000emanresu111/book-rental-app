@@ -42,7 +42,7 @@ const rentBook = async (req, res, next) => {
     try {
       book.quantity -= 1
       await book.save()
-     
+
       const rental = new Rental({
         userId: req.user._id,
         bookId: book._id
@@ -63,7 +63,6 @@ const rentBook = async (req, res, next) => {
     next(error)
   }
 }
-
 
 const returnBook = async (req, res, next) => {
   try {

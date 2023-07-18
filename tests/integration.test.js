@@ -1,13 +1,16 @@
 const test = require('ava')
 const bcrypt = require('bcrypt')
 const supertest = require('supertest')
+const ObjectId = require('mongoose').Types.ObjectId
 const sinon = require('sinon')
 const User = require('../models/User')
+const Book = require('../models/Book')
+const Rental = require('../models/Rental')
 
 process.env.NODE_ENV = 'testing'
 const app = require('../app')
 
-const registrationInfo = {
+const user = {
   username: 'testuser1',
   email: 'testuser1@example.com',
   password: 'testpassword1',
@@ -20,12 +23,13 @@ const userCredentials = {
 }
 
 const saveStub = sinon.stub(User.prototype, 'save').resolves()
+const bookSaveStub = sinon.stub(Book.prototype, 'save').resolves()
 
 test('Integration Test: Register, Login, Rent, and Return', async (t) => {
   // Register a new user
   const registerResponse = await supertest(app)
     .post('/auth/register')
-    .send(registrationInfo)
+    .send(user)
     .expect(201)
 
   console.log('Registration response:', registerResponse.body)
@@ -39,7 +43,7 @@ test('Integration Test: Register, Login, Rent, and Return', async (t) => {
     password: await bcrypt.hash('testpassword1', 10)
   })
 
-  const findOneStub = sinon.stub(User, 'findOne').resolves(testUser)
+  const findOneUserStub = sinon.stub(User, 'findOne').resolves(testUser)
 
   const loginResponse = await supertest(app)
     .post('/auth/login')
@@ -52,32 +56,50 @@ test('Integration Test: Register, Login, Rent, and Return', async (t) => {
 
   t.truthy(token)
 
-  //   // Rent a book
-  //   const rentResponse = await supertest(app)
-  //     .post('/books/:bookId/rent')
-  //     .set('Authorization', `Bearer ${token}`)
-  //     .send({
-  //       title: 'Book 1',
-  //       author: 'Author 1',
-  //       quantity: 5,
-  //       bookstoreId: 'bookstore1'
-  //     })
-  //     .expect(200)
+  // Rent a book
+  const book = new Book({
+    _id: new ObjectId(),
+    title: 'Book 1',
+    author: 'Author 1',
+    quantity: 5,
+    bookstoreId: user.tenantId
+  })
 
-  //   t.is(rentResponse.body.message, 'Book rented successfully')
+  const findOneBookStub = sinon.stub(Book, 'findOne').resolves(book)
+  // const saveBookStub = sinon.stub(book, 'save').resolves(book)
+  const startSessionStub = sinon.stub(Book, 'startSession').resolves({
+    startTransaction: sinon.stub(),
+    commitTransaction: sinon.stub(),
+    abortTransaction: sinon.stub(),
+    endSession: sinon.stub()
+  })
 
-  //   // Return the rented book
-  //   const returnResponse = await supertest(app)
-  //     .post('/books/:bookId/return')
-  //     .set('Authorization', `Bearer ${token}`)
-  //     .send({
-  //       title: 'Book 1',
-  //       author: 'Author 1'
-  //     })
-  //     .expect(200)
+  const rentalSaveStub = sinon.stub(Rental.prototype, 'save').resolves(new Rental())
+  const activeRentalStub = sinon.stub(Rental, 'findOne').resolves(null)
 
-  //   t.is(returnResponse.body.message, 'Book returned successfully')
+  const rentResponse = await supertest(app)
+    .post(`/books/${book._id}/rent`)
+    .set('Authorization', `Bearer ${token}`)
+    .expect(200)
+
+  console.log('Rent response:', rentResponse.body)
+
+  t.deepEqual(new Book(rentResponse.body), book)
+  t.is(book.quantity, 4)
+
+  // Return the rented book
+  const returnResponse = await supertest(app)
+    .post(`/books/${book._id}/return`)
+    .set('Authorization', `Bearer ${token}`)
+    .expect(200)
+
+  console.log('Return response:', returnResponse.body)
+
+  t.deepEqual(new Book(returnResponse.body), book)
+  t.is(book.quantity, 5)
 
   saveStub.restore()
-  findOneStub.restore()
+  bookSaveStub.restore()
+  findOneUserStub.restore()
+  findOneBookStub.restore()
 })
