@@ -5,7 +5,7 @@ const errorHandler = (err, req, res, next) => {
   const code = err.code || 'INTERNAL_SERVER_ERROR'
   const message = err.message || 'Internal Server Error'
 
-  logger.error(err) // Log the error using the logger
+  logger.error(err)
 
   if (!res.headersSent) {
     const errorResponse = {
