@@ -20,7 +20,7 @@ const loggerMiddleware = (req, res, next) => {
 
   res.on('finish', () => {
     const responseTime = Date.now() - startTime
-    const logMessage = `[${new Date().toLocaleString()}] ${req.method} ${req.url} - ${res.statusCode} (${responseTime}ms)`
+    const logMessage = `${req.method} ${req.url} - ${res.statusCode} (${responseTime}ms)`
     logger.info(logMessage)
   })
 
