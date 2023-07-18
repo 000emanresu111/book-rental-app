@@ -1,6 +1,8 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const dotenv = require('dotenv')
+const swaggerUi = require('swagger-ui-express')
+const swaggerFile = require('./swagger_output.json')
 const errorHandler = require('./middlewares/errorHandler')
 const authRoutes = require('./routes/authRoutes')
 const bookstoreRoutes = require('./routes/bookstoreRoutes')
@@ -31,6 +33,7 @@ if (config.connectToDB) {
 app.use('/auth', authRoutes)
 app.use('/bookstores', bookstoreRoutes)
 app.use('/books', bookRoutes)
+app.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerFile))
 
 // Start the server
 const port = process.env.NODE_ENV === 'testing' ? undefined : process.env.PORT

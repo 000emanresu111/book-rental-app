@@ -4,6 +4,8 @@
   "description": "RESTful API service for a multi-tenant Book Rental application",
   "main": "index.js",
   "scripts": {
+    "start": "node app.js",
+    "swagger-autogen": "node swagger.js",
     "test": "ava -v"
   },
   "keywords": [],
@@ -17,6 +19,8 @@
     "express-winston": "^4.2.0",
     "jsonwebtoken": "^9.0.1",
     "mongoose": "^7.3.4",
+    "swagger-autogen": "^2.23.5",
+    "swagger-ui-express": "^5.0.0",
     "winston": "^3.10.0"
   },
   "devDependencies": {
