@@ -4,7 +4,7 @@
   "description": "RESTful API service for a multi-tenant Book Rental application",
   "main": "index.js",
   "scripts": {
-    "test": "ava"
+    "test": "ava -v"
   },
   "keywords": [],
   "author": "",

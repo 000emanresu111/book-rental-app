@@ -27,7 +27,7 @@ test.serial('returnBook should increase the quantity of a book by 1', async (t) 
 
   const req = {
     params: {
-      id: bookId
+      bookId
     }
   }
 
@@ -54,7 +54,7 @@ test.serial('returnBook should respond with 404 if book is not found', async (t)
 
   const req = {
     params: {
-      id: bookId
+      bookId
     }
   }
 
@@ -84,7 +84,7 @@ test.serial('returnBook should handle errors and call next middleware', async (t
 
   const req = {
     params: {
-      id: bookId
+      bookId
     }
   }
 
