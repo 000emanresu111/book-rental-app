@@ -1,4 +1,3 @@
-const ObjectId = require('mongoose').Types.ObjectId
 const Book = require('../models/Book')
 const Rental = require('../models/Rental')
 

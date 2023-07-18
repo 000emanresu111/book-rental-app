@@ -8,6 +8,16 @@ require('dotenv').config({ path: '.env' })
 
 process.env.NODE_ENV = 'testing'
 
+let findByIdStub
+
+test.beforeEach(() => {
+  findByIdStub = sinon.stub(User, 'findById')
+})
+
+test.afterEach(() => {
+  findByIdStub.restore()
+})
+
 test.serial('authenticateUser middleware sets req.user with authenticated user', async (t) => {
   const userId = 'user123'
   const token = jwt.sign({ userId }, process.env.JWT_SECRET)
@@ -20,7 +30,7 @@ test.serial('authenticateUser middleware sets req.user with authenticated user',
   const next = sinon.spy()
 
   const user = new User({ _id: userId })
-  sinon.stub(User, 'findById').resolves(user)
+  findByIdStub.resolves(user)
 
   await authenticateUser(req, res, next)
 
@@ -28,8 +38,6 @@ test.serial('authenticateUser middleware sets req.user with authenticated user',
   t.is(req.user, user)
   t.true(next.calledOnce)
   t.deepEqual(next.args[0], [])
-
-  User.findById.restore()
 })
 
 test.serial('authenticateUser middleware responds with Unauthorized if authorization header is missing', async (t) => {

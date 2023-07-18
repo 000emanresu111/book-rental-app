@@ -45,3 +45,57 @@ test.serial('returnBook should increase the quantity of a book by 1', async (t) 
 
   findByIdStub.restore()
 })
+
+test.serial('returnBook should respond with 404 if book is not found', async (t) => {
+  const bookId = '1'
+
+  findByIdStub = sinon.stub(Book, 'findById')
+  findByIdStub.withArgs(bookId).resolves(null)
+
+  const req = {
+    params: {
+      id: bookId
+    }
+  }
+
+  const res = {
+    status: sinon.stub().returnsThis(),
+    json: sinon.spy()
+  }
+
+  const next = sinon.spy()
+
+  await returnBook(req, res, next)
+
+  t.true(findByIdStub.calledOnceWithExactly(bookId))
+  t.true(res.status.calledOnceWith(404))
+  t.true(res.json.calledOnceWith({ message: 'Book not found' }))
+  t.false(next.called)
+
+  findByIdStub.restore()
+})
+
+test.serial('returnBook should handle errors and call next middleware', async (t) => {
+  const bookId = '1'
+  const error = new Error('Something went wrong')
+
+  findByIdStub = sinon.stub(Book, 'findById')
+  findByIdStub.withArgs(bookId).throws(error)
+
+  const req = {
+    params: {
+      id: bookId
+    }
+  }
+
+  const res = {}
+
+  const next = sinon.spy()
+
+  await returnBook(req, res, next)
+
+  t.true(findByIdStub.calledOnceWithExactly(bookId))
+  t.true(next.calledOnceWith(error))
+
+  findByIdStub.restore()
+})

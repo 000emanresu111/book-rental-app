@@ -32,7 +32,6 @@ app.use('/auth', authRoutes)
 app.use('/bookstores', bookstoreRoutes)
 app.use('/books', bookRoutes)
 
-
 // Start the server
 const port = process.env.NODE_ENV === 'testing' ? undefined : process.env.PORT
 

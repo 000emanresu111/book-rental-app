@@ -1,4 +1,4 @@
-const winston = require('winston');
+const winston = require('winston')
 
 const logLevels = {
   error: 0,
@@ -6,7 +6,7 @@ const logLevels = {
   info: 2,
   verbose: 3,
   debug: 4
-};
+}
 
 const logger = winston.createLogger({
   level: 'info',
@@ -14,21 +14,21 @@ const logger = winston.createLogger({
   format: winston.format.combine(
     winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
     winston.format.printf(({ level, message, timestamp }) => {
-      const coloredLevel = winston.format.colorize().colorize(level, level.toUpperCase());
-      return `[${timestamp}] ${coloredLevel}: ${message}`;
+      const coloredLevel = winston.format.colorize().colorize(level, level.toUpperCase())
+      return `[${timestamp}] ${coloredLevel}: ${message}`
     })
   ),
   transports: [
     process.env.NODE_ENV !== 'testing' ? new winston.transports.Console() : null,
     new winston.transports.File({ filename: 'logs.log', format: winston.format.simple(), encoding: 'utf8' })
   ].filter(Boolean)
-});
+})
 
 const loggerMiddleware = (req, res, next) => {
   if (process.env.NODE_ENV !== 'testing') {
-    logger.info(`[${new Date().toLocaleString()}] ${req.method} ${req.url}`);
+    logger.info(`[${new Date().toLocaleString()}] ${req.method} ${req.url}`)
   }
-  next();
-};
+  next()
+}
 
-module.exports = { logger, loggerMiddleware };
+module.exports = { logger, loggerMiddleware }

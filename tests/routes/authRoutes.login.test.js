@@ -7,19 +7,26 @@ const User = require('../../models/User')
 process.env.NODE_ENV = 'testing'
 const app = require('../../app')
 
-test.serial('Correct user registration returns 201 status code', async (t) => {
-  const saveStub = sinon.stub(User.prototype, 'save').resolves()
-  const findOneStub = sinon.stub(User, 'findOne').resolves(null)
+let saveStub
+let findOneStub
 
+test.beforeEach(() => {
+  saveStub = sinon.stub(User.prototype, 'save')
+  findOneStub = sinon.stub(User, 'findOne')
+})
+
+test.afterEach(() => {
+  saveStub.restore()
+  findOneStub.restore()
+})
+
+test.serial('Correct user registration returns 201 status code', async (t) => {
   const response = await supertest(app)
     .post('/auth/register')
     .send({ username: 'usertest', email: 'user@example.com', password: 'password', tenantId: '123' })
 
   t.is(response.status, 201)
   t.true(saveStub.calledOnce)
-
-  findOneStub.restore()
-  saveStub.restore()
 })
 
 test.serial('Correct user login returns a token', async (t) => {
@@ -28,7 +35,7 @@ test.serial('Correct user login returns a token', async (t) => {
     password: await bcrypt.hash('testpassword', 10)
   })
 
-  const findOneStub = sinon.stub(User, 'findOne').resolves(testUser)
+  findOneStub.resolves(testUser)
 
   const response = await supertest(app)
     .post('/auth/login')
@@ -36,6 +43,4 @@ test.serial('Correct user login returns a token', async (t) => {
 
   t.is(response.status, 200)
   t.true(Object.prototype.hasOwnProperty.call(response.body, 'token'))
-
-  findOneStub.restore()
 })
