@@ -29,7 +29,7 @@ test.afterEach(() => {
 })
 
 test.serial('registerUser creates a new user and returns a JWT token', async (t) => {
-  const hashedPassword = 'hashed_password' // Set the hashed password
+  const hashedPassword = 'hashed_password'
   const user = new User({
     username: 'testuser',
     email: 'test@example.com',
@@ -37,8 +37,8 @@ test.serial('registerUser creates a new user and returns a JWT token', async (t)
     tenantId: 'bookstore123'
   })
 
-  saveStub.resolves(user) // Resolve the saveStub promise with the user
-  hashStub.withArgs('password123', 10).resolves(hashedPassword) // Resolve the hashStub promise with the hashed password
+  saveStub.resolves(user)
+  hashStub.withArgs('password123', 10).resolves(hashedPassword)
   signStub.returns('jwt_token')
   findOneStub.resolves(null)
 

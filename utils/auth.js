@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken')
 const User = require('../models/User')
+const { logger } = require('../middlewares/logger')
 
 const authenticateUser = async (req, res, next) => {
   try {
@@ -19,7 +20,7 @@ const authenticateUser = async (req, res, next) => {
 
     next()
   } catch (error) {
-    // console.error(error)
+    logger.error(error)
     res.status(401).json({ error: 'Unauthorized' })
   }
 }
