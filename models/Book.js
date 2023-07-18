@@ -16,8 +16,7 @@ const bookSchema = new mongoose.Schema({
   bookstoreId: {
     type: String,
     ref: 'Bookstore',
-    required: true,
-    unique: true
+    required: true
   }
 })
 

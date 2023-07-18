@@ -61,7 +61,6 @@ POST http://localhost:3000/books/:bookId/rent
 
 ```json
 {
-    "_id": "64b517ff0dad56bdcd2c2f3b",
     "title": "Book 1",
     "author": "Author 1",
     "quantity": 5,

@@ -71,10 +71,10 @@ const rentBook = async (req, res, next) => {
 
 const returnBook = async (req, res, next) => {
   try {
-    const book = await Book.findById(req.params.id)
+    const book = await Book.findById(req.params.bookId)
 
     if (!book) {
-      logger.error(`Book with ID ${req.params.id} not found`)
+      logger.error(`Book with ID ${req.params.bookId} not found`)
       return res.status(404).json({ message: 'Book not found' })
     }
 

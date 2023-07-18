@@ -4,6 +4,8 @@ const Bookstore = require('../models/Bookstore')
 const mongoose = require('mongoose')
 const errorHandler = require('../middlewares/errorHandler')
 const connectToMongoDB = require('./db')
+const { logger } = require('../middlewares/logger')
+
 require('dotenv').config({ path: '.env' })
 
 const dbURI = process.env.MONGODB_URI
@@ -14,7 +16,7 @@ const initializeData = async () => {
     await initializeBooks()
     await initializeBookstores()
   } catch (error) {
-    console.error('Failed to initialize data:', error)
+    logger.error(`Failed to initialize data: ${error}`)
   }
 }
 
@@ -34,7 +36,7 @@ const initializeUsers = async () => {
         username: 'user2',
         email: 'user2@example.com',
         password: 'user2password',
-        tenantId: 'bookstore2'
+        tenantId: 'bookstore1'
       },
       {
         username: 'user3',
@@ -45,9 +47,9 @@ const initializeUsers = async () => {
     ]
 
     await User.insertMany(users)
-    console.log('Users collection initialized')
+    logger.info('Users collection initialized')
   } catch (error) {
-    console.error('Failed to initialize Users collection:', error)
+    logger.error(`Failed to initialize Users collection: ${error}`)
   }
 }
 
@@ -78,9 +80,9 @@ const initializeBooks = async () => {
     ]
 
     await Book.insertMany(books)
-    console.log('Books collection initialized')
+    logger.info('Book collection initialized')
   } catch (error) {
-    console.error('Failed to initialize Books collection:', error)
+    logger.error(`Failed to initialize Books collection: ${error}`)
   }
 }
 
@@ -90,15 +92,15 @@ const initializeBookstores = async () => {
     await Bookstore.deleteMany()
 
     const bookstores = [
-      { name: 'Bookstore 1' },
-      { name: 'Bookstore 2' },
-      { name: 'Bookstore 3' }
+      { name: 'BookstoreNameOne' },
+      { name: 'BookstoreNameTwo' },
+      { name: 'BookstoreNameThree' }
     ]
 
     await Bookstore.insertMany(bookstores)
-    console.log('Bookstores collection initialized')
+    logger.info('Bookstores collection initialized')
   } catch (error) {
-    console.error('Failed to initialize Bookstores collection:', error)
+    logger.error(`Failed to initialize Bookstores collection: ${error}`)
   }
 }
 
@@ -106,9 +108,9 @@ const initializeBookstores = async () => {
 const closeConnection = async () => {
   try {
     await mongoose.disconnect()
-    console.log('MongoDB connection closed')
+    logger.info('MongoDB connection closed')
   } catch (error) {
-    console.error('Failed to close MongoDB connection:', error)
+    logger.error(`Failed to close MongoDB connection: ${error}`)
   }
 }
 
