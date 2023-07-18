@@ -1,5 +1,6 @@
 const Book = require('../models/Book')
 const Rental = require('../models/Rental')
+const { logger } = require('../middlewares/logger')
 
 const getAllBooks = async (req, res, next) => {
   try {
@@ -23,10 +24,12 @@ const rentBook = async (req, res, next) => {
     const book = await Book.findOne({ _id: bookId, bookstoreId: userTenantId })
 
     if (!book) {
+      logger.error(`Book with ID ${bookId} not found`)
       return res.status(404).json({ message: 'Book not found' })
     }
 
     if (book.quantity === 0) {
+      logger.error(`Book with ID ${bookId} is out of stock`)
       return res.status(400).json({ message: 'Book out of stock' })
     }
 
@@ -37,6 +40,7 @@ const rentBook = async (req, res, next) => {
     })
 
     if (activeRental) {
+      logger.error(`User with ID ${req.user._id} already has an active rental for book with ID ${bookId}`)
       return res.status(400).json({ message: 'User already has an active rental for this book' })
     }
 
@@ -70,6 +74,7 @@ const returnBook = async (req, res, next) => {
     const book = await Book.findById(req.params.id)
 
     if (!book) {
+      logger.error(`Book with ID ${req.params.id} not found`)
       return res.status(404).json({ message: 'Book not found' })
     }
 
@@ -87,6 +92,7 @@ const searchBooks = async (req, res, next) => {
     const { title, author } = req.query
 
     if (!title && !author) {
+      logger.error('No search criteria provided')
       return res.status(400).json({ message: 'Please provide a title or author for the search' })
     }
 
