@@ -13,7 +13,13 @@ const rentalSchema = new mongoose.Schema({
   },
   returnDate: {
     type: Date,
-    default: null
+    default: null,
+    validate: {
+      validator: function (value) {
+        return value === null || value > Date.now()
+      },
+      message: 'Return date must be a future date'
+    }
   }
 })
 
