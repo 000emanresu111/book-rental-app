@@ -7,6 +7,6 @@ const router = express.Router()
 router.get('/', authenticateUser, getAllBooks)
 router.post('/:bookId/rent', authenticateUser, rentBook)
 router.post('/:bookId/return', authenticateUser, returnBook)
-router.get('/search', authenticateUser, searchBooks)
+router.post('/search', authenticateUser, searchBooks)
 
 module.exports = router

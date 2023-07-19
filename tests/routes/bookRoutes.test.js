@@ -146,7 +146,7 @@ test.serial('POST /books/:bookId/return shows the returned book and increases it
   saveStub.restore()
 })
 
-test.serial('GET /books/search returns books found via regex query', async (t) => {
+test.serial('POST /books/search returns books found via regex query', async (t) => {
   const user = {
     userId: 'user123',
     tenantId: 'tenant123'
@@ -167,9 +167,9 @@ test.serial('GET /books/search returns books found via regex query', async (t) =
   const findStub = sinon.stub(Book, 'find').resolves(searchResults)
 
   const response = await supertest(app)
-    .get('/books/search')
-    .query(searchQuery)
+    .post('/books/search')
     .set('Authorization', `Bearer ${token}`)
+    .send(searchQuery)
     .expect(200)
 
   t.deepEqual(response.body, searchResults)

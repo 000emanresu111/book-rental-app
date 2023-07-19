@@ -1,6 +1,7 @@
 # book-rental-app
 The Book Rental app is a RESTful API service that allows users to rent books online. 
 It provides features such as user registration and login, searching for book, renting and returining them.
+Custome error handling and logging (with a logs.log file output) are also provided.
 
 ## Setup
 ### 1) Clone the Repository
@@ -206,6 +207,42 @@ Notice the increased quantity from 4 to 5.
 }
 ```
 
+### Search a book
+
+#### Request
+
+Use either title or author or both.
+
+```
+POST http://localhost:3000/books/search
+```
+
+```json
+{
+    "title": "Book 2",
+    "author": "Author 2"
+}
+```
+
+```bash
+curl -X POST -H "Content-Type: application/json" -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NGI3OGU5NmU3NzkzYWE4NDFhZTUxZGYiLCJpYXQiOjE2ODk3NTEyMTcsImV4cCI6MTY4OTgzNzYxN30.ToR2HxEPnK_2AgR8bKET7YyiupALlPcwPbrnJocmzKs" -d "{\"title\":\"Book 2\",\"author\":\"Author 2\"}" http://localhost:3000/books/search
+
+```
+
+#### Response
+
+```json
+[
+    {
+        "_id": "64b7863efcd96b314d04d2aa",
+        "title": "Book 2",
+        "author": "Author 2",
+        "quantity": 3,
+        "bookstoreId": "bookstore2",
+        "__v": 0
+    }
+]
+```
 ## Project description
 ### System Architecture
 The Book Rental app backend is implemented using Node.js and Express.js.

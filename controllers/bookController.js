@@ -89,7 +89,7 @@ const returnBook = async (req, res, next) => {
 
 const searchBooks = async (req, res, next) => {
   try {
-    const { title, author } = req.query
+    const { title, author } = req.body
 
     if (!title && !author) {
       logger.error('No search criteria provided')

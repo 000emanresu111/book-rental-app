@@ -22,7 +22,7 @@ test.afterEach.always(() => {
 
 test.serial('searchBooks returns books matching the title search criteria', async (t) => {
   const req = {
-    query: { title: 'title1' }
+    body: { title: 'title1' }
   }
 
   const res = {
@@ -40,7 +40,7 @@ test.serial('searchBooks returns books matching the title search criteria', asyn
 
 test.serial('searchBooks returns books matching the author search criteria', async (t) => {
   const req = {
-    query: { author: 'author2' }
+    body: { author: 'author2' }
   }
 
   const res = {
@@ -58,7 +58,7 @@ test.serial('searchBooks returns books matching the author search criteria', asy
 
 test.serial('searchBooks returns error when no search criteria are provided', async (t) => {
   const req = {
-    query: {}
+    body: {}
   }
 
   const res = {
@@ -78,7 +78,7 @@ test.serial('searchBooks returns error when no search criteria are provided', as
 
 test.serial('searchBooks returns books matching both title and author search criteria', async (t) => {
   const req = {
-    query: { title: 'title1', author: 'author1' }
+    body: { title: 'title1', author: 'author1' }
   }
 
   const res = {
