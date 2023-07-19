@@ -1,7 +1,9 @@
 # book-rental-app
-The Book Rental app is a RESTful API service that allows users to rent books online. 
-It provides features such as user registration and login, searching for book, renting and returining them.
-Custome error handling and logging (with a logs.log file output) are also provided.
+- The Book Rental app is a RESTful API service that allows users to rent books online. 
+- It provides features such as user registration and login, searching for books, renting and returning them.
+- The project is implemented using Node.js, Express.js and MongoDB.
+- Custom error handling and logging (with a logs.log file output) are also provided.
+- The chosen formatter is [standard.js](https://standardjs.com/), while the chosen linter is [eslint](https://www.npmjs.com/package/eslint).
 
 ## Setup
 ### 1) Clone the Repository
