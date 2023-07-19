@@ -5,6 +5,9 @@ module.exports = {
   testing: {
     connectToDB: false
   },
+  docker: {
+    connectToDB: true
+  },
   production: {
     connectToDB: true
   }

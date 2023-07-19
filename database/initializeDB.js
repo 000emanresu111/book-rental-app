@@ -9,23 +9,25 @@ const { logger } = require('../middlewares/logger')
 
 require('dotenv').config({ path: '.env' })
 
-const dbURI = process.env.MONGODB_URI
+const dbURI = process.env.NODE_ENV === 'docker' ? process.env.MONGODB_URI : process.env.MONGODB_URI_LOCAL
 
-User.createCollection().then(function (collection) {
-  logger.info('Collection is created!')
-})
+const createCollection = async (model) => {
+  try {
+    await model.createCollection()
+    logger.info('Collection is created!')
+  } catch (error) {
+    logger.error(`Failed to create collection: ${error}`)
+  }
+}
 
-Book.createCollection().then(function (collection) {
-  logger.info('Collection is created!')
-})
+const createCollections = async () => {
+  await createCollection(User)
+  await createCollection(Book)
+  await createCollection(Bookstore)
+  await createCollection(Rental)
+}
 
-Bookstore.createCollection().then(function (collection) {
-  logger.info('Collection is created!')
-})
-
-Rental.createCollection().then(function (collection) {
-  logger.info('Collection is created!')
-})
+createCollections()
 
 const initializeData = async () => {
   try {

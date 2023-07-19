@@ -25,7 +25,7 @@ app.use(errorHandler)
 
 // MongoDB Connection (Conditional)
 if (config.connectToDB) {
-  const dbURI = process.env.MONGODB_URI
+  const dbURI = process.env.NODE_ENV === 'docker' ? process.env.MONGODB_URI : process.env.MONGODB_URI_LOCAL
   connectToMongoDB(dbURI)
 }
 
