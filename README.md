@@ -252,17 +252,17 @@ The backend communicates with a MongoDB database for storing book and user infor
 The server exposes a RESTful API that the client can interact with to perform various operations.
 
 ### Features description
-- 1. User Authentication and Authorization
+- User Authentication and Authorization
 This is implemented via JWT tokens. 
 When a user registers, a JWT token is generated and returned to the client.
 The client must then include this token in the Authorization header of all subsequent requests.
 The server will then verify the token and allow or deny access to the requested resource.
 
-- 2. Books
+- Books
 Race conditions to prevent multiple users from renting the same book at the same time are handled by using MongoDB transactions.
 Also atomic operations (such as findOneAndUpdate) could be used to ensure that the quantity of a book is updated correctly. 
 
-- 3. Rentals
+- Rentals
 Users cannot rent a book if all copies are rented out or rent more than one copy of the same book at the same time.
 This has been achieved using another colleciton (Rentals) that keeps track of all the rentals.
 In-memory caching could be used to improve performance and reduce the number of database queries.
@@ -270,7 +270,7 @@ Exploiting database indexes could also improve performance.
 Moreover the Rentals collection could be partitioned by tenantId to improve scalability.
 Finally Redis could be used to implement a distributed cache.
 
-- 4. Search
-Users can search for a book based on its title or author.
+- Search
+Users can search for a book based on its title or author or both.
 
 
