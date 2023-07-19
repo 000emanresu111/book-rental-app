@@ -1,8 +1,89 @@
 # book-rental-app
+The Book Rental app is a RESTful API service that allows users to rent books online. 
+It provides features such as user registration and login, searching for book, renting and returining them.
 
+## System Architecture
+The Book Rental app backend is implemented using Node.js and Express.js.
+The backend communicates with a MongoDB database for storing book and user information. 
+The server exposes a RESTful API that the client can interact with to perform various operations.
 
-## API endpoints
+## Usage
+### 1) Clone the Repository
+```bash
+$ git clone https://github.com/000emanresu111/book-rental-app.git
+```
+### 2) Navigate into the folder
+```bash
+$ cd book-rental-app
+```
+### 3) Install dependencies
+```bash
+$ npm install
+```
 
+### 4) Start the app
+
+#### 4.1) Locally
+```bash
+$ npm run start
+```
+This will run both the backend server on port 3000 and the MongoDB instance on port 27017.
+  
+```bash
+$ npm start
+```
+
+```bash
+> book-rental-app@1.0.0 start
+> node app.js
+
+[2023-07-19 08:38:20] INFO: Server listening on port 3000
+[2023-07-19 08:38:20] INFO: Connected to MongoDB
+```
+
+#### 4.2) Using Docker
+```bash
+$ docker compose build
+$ docker compose up
+```
+
+```bash
+book-rental-app-app-1      | [2023-07-19 06:41:17] INFO: Server listening on port 3000
+book-rental-app-app-1      | [2023-07-19 06:41:18] INFO: Connected to MongoDB
+book-rental-app-app-1      | [2023-07-19 06:41:31] ERROR: User with this email already exists
+book-rental-app-app-1      | [2023-07-19 06:41:31] INFO: POST /register - 400 (37ms)
+```
+
+### 5) Populate the database with some data
+```bash
+$ npm run initialize-db
+```
+
+```bash
+> book-rental-app@1.0.0 initialize-db /
+> node ./database/initializeDB.js
+
+[2023-07-19 06:43:28] INFO: Connected to MongoDB
+[2023-07-19 06:43:28] INFO: Collection is created!
+[2023-07-19 06:43:28] INFO: Collection is created!
+[2023-07-19 06:43:28] INFO: Collection is created!
+[2023-07-19 06:43:28] INFO: Collection is created!
+[2023-07-19 06:43:28] INFO: Users collection initialized
+[2023-07-19 06:43:28] INFO: Book collection initialized
+[2023-07-19 06:43:28] INFO: Bookstores collection initialized
+[2023-07-19 06:43:28] INFO: MongoDB connection closed
+```
+
+### 6) Run tests
+```bash
+$ npm test
+```
+
+## API endpoints documentation
+
+Once the app is up and running (locally or via Docker), you can access the API documentation and swagger at http://localhost:3000/docs.
+
+## Example 
 
 ### Register a new user
 
