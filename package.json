@@ -7,7 +7,8 @@
     "start": "node app.js",
     "swagger-autogen": "node swagger.js",
     "test": "ava -v",
-    "lint:fix": "eslint --fix ."
+    "lint:fix": "eslint --fix .",
+    "initialize-db": "node ./database/initializeDB.js"
   },
   "keywords": [],
   "author": "",

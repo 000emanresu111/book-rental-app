@@ -3,8 +3,8 @@ const Book = require('../models/Book')
 const Bookstore = require('../models/Bookstore')
 const Rental = require('../models/Rental')
 const mongoose = require('mongoose')
-const errorHandler = require('../middlewares/errorHandler')
 const connectToMongoDB = require('./db')
+const errorHandler = require('../middlewares/errorHandler')
 const { logger } = require('../middlewares/logger')
 
 require('dotenv').config({ path: '.env' })
@@ -27,15 +27,16 @@ const createCollections = async () => {
   await createCollection(Rental)
 }
 
-createCollections()
-
-const initializeData = async () => {
+const populateDB = async () => {
   try {
+    await connectToMongoDB(dbURI)
+    await createCollections()
     await initializeUsers()
     await initializeBooks()
     await initializeBookstores()
+    await closeConnection()
   } catch (error) {
-    logger.error(`Failed to initialize data: ${error}`)
+    errorHandler(error)
   }
 }
 
@@ -133,15 +134,4 @@ const closeConnection = async () => {
   }
 }
 
-const initDB = async () => {
-  try {
-    await connectToMongoDB(dbURI)
-    await initializeData()
-  } catch (error) {
-    errorHandler(error)
-  } finally {
-    closeConnection()
-  }
-}
-
-initDB()
+populateDB()
