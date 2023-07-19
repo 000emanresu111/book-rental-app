@@ -79,16 +79,17 @@ You may perform the requests using a tool such as Postman or cURL, or alternatev
 
 ### Register a new user
 
+#### Request
 ```
 POST http://localhost:3000/auth/register
 ```
 
 ```json
 {
-"username": "user42",
-"email": "user42@example.com",
-"password": "user42_password",
-"tenantId": "user42_bookstore"
+  "username": "usernameForTest",
+  "email": "usernameForTest@example.com",
+  "password": "password",
+  "tenantId": "bookstore1"
 }
 ```
 
@@ -96,22 +97,23 @@ POST http://localhost:3000/auth/register
 curl -X POST -H "Content-Type: application/json" -d "{\"username\":\"user42\",\"email\":\"user42@example.com\",\"password\":\"user42_password\",\"tenantId\":\"user42_bookstore\"}" http://localhost:3000/auth/register
 ```
  
-#### Example response
+#### Response
 
 ```json
-{"message":"User registered successfully","token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NGI1MDJmZjMzMjZiZWY2NDI4NTE0YzQiLCJpYXQiOjE2ODk1ODQzODMsImV4cCI6MTY4OTU4Nzk4M30.-8K7plHJgBy3acJiXu9-S0G_P5IrPgyQlrFW9XtbPR8"}
+{"message":"User registered successfully","token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NGI3OGU5NmU3NzkzYWE4NDFhZTUxZGYiLCJpYXQiOjE2ODk3NTExOTAsImV4cCI6MTY4OTgzNzU5MH0.LZAnNk4z1M5mWs8j9miwcNTPXNZ_SzZJeu8PUISFJTQ"}
 ```
 
 ### User login
 
+#### Request
 ```
 POST http://localhost:3000/auth/login
 ```
 
 ```json
 {
-"email": "user42@example.com",
-"password": "user42_password"
+  "email": "usernameForTest@example.com",
+  "password": "password"
 }
 ```
 
@@ -120,13 +122,18 @@ curl -X POST http://localhost:3000/auth/login -H "Content-Type: application/json
 
 ```
 
-#### Example response
+#### Response
 
 ```json
-{"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NGI2NjcwMDRiZGI2ZmRkNzRmODIzOTAiLCJpYXQiOjE2ODk2NzY0NjUsImV4cCI6MTY4OTc2Mjg2NX0.piE0n1e59urEgo5Qx0w3mZv7IddvuzUYCvSkFyz9o6c"}
+{"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NGI3OGU5NmU3NzkzYWE4NDFhZTUxZGYiLCJpYXQiOjE2ODk3NTEyMTcsImV4cCI6MTY4OTgzNzYxN30.ToR2HxEPnK_2AgR8bKET7YyiupALlPcwPbrnJocmzKs"}
 ```
 
 ### Rent a book
+
+#### Request
+
+bookId is the id of the book you want to rent.
+For example 64b7863efcd96b314d04d2a9.
 
 ```
 POST http://localhost:3000/books/:bookId/rent
@@ -134,21 +141,69 @@ POST http://localhost:3000/books/:bookId/rent
 
 ```json
 {
-    "title": "Book 1",
-    "author": "Author 1",
-    "quantity": 5,
-    "bookstoreId": "bookstore1"
-  }
+  "title": "Book 1",
+  "author": "Author 1",
+  "quantity": 5,
+  "bookstoreId": "bookstore1"
+}
 ```
 
 ```bash
-curl -X POST http://localhost:3000/books/64b517ff0dad56bdcd2c2f3b/rent -H 'Content-Type: application/json' -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NGI2NjcwMDRiZGI2ZmRkNzRmODIzOTAiLCJpYXQiOjE2ODk2NzY0NjUsImV4cCI6MTY4OTc2Mjg2NX0.piE0n1e59urEgo5Qx0w3mZv7IddvuzUYCvSkFyz9o6c' -d '{"title": "Book 1", "author": "Author 1", "quantity": 5, "bookstoreId": "bookstore1"}'
+curl -X POST http://localhost:3000/books/64b7863efcd96b314d04d2a9/rent -H 'Content-Type: application/json' -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NGI2NjcwMDRiZGI2ZmRkNzRmODIzOTAiLCJpYXQiOjE2ODk2NzY0NjUsImV4cCI6MTY4OTc2Mjg2NX0.piE0n1e59urEgo5Qx0w3mZv7IddvuzUYCvSkFyz9o6c' -d '{"title": "Book 1", "author": "Author 1", "quantity": 5, "bookstoreId": "bookstore1"}'
 ```
 
-#### Example response
+#### Response
+
+Notice the decreased quantity from 5 to 4.
 
 ```json
-{"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NGI1MDJmZjMzMjZiZWY2NDI4NTE0YzQiLCJpYXQiOjE2ODk1ODQ3NTgsImV4cCI6MTY4OTU4ODM1OH0.BDXtbv3ZmBJWutfeyNpvzKaqindrlz7OWtVs67R9laA"}
+{
+    "_id": "64b7863efcd96b314d04d2a9",
+    "title": "Book 1",
+    "author": "Author 1",
+    "quantity": 4,
+    "bookstoreId": "bookstore1",
+    "__v": 0
+}
+```
+
+### Return a rented book
+
+#### Request
+
+bookId is the id of the book you want to return.
+For example 64b7863efcd96b314d04d2a9.
+
+```
+POST http://localhost:3000/books/:bookId/return
+```
+
+```json
+{
+  "title": "Book 1",
+  "author": "Author 1",
+  "quantity": 5,
+  "bookstoreId": "bookstore1"
+}
+```
+
+```bash
+curl -X POST http://localhost:3000/books/64b7863efcd96b314d04d2a9/return -H 'Content-Type: application/json' -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NGI2NjcwMDRiZGI2ZmRkNzRmODIzOTAiLCJpYXQiOjE2ODk2NzY0NjUsImV4cCI6MTY4OTc2Mjg2NX0.piE0n1e59urEgo5Qx0w3mZv7IddvuzUYCvSkFyz9o6c'
+```
+
+#### Response
+
+Notice the increased quantity from 4 to 5.
+
+```json
+{
+    "_id": "64b7863efcd96b314d04d2a9",
+    "title": "Book 1",
+    "author": "Author 1",
+    "quantity": 5,
+    "bookstoreId": "bookstore1",
+    "__v": 0
+}
 ```
 
 ## Project description
