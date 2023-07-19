@@ -2,12 +2,7 @@
 The Book Rental app is a RESTful API service that allows users to rent books online. 
 It provides features such as user registration and login, searching for book, renting and returining them.
 
-## System Architecture
-The Book Rental app backend is implemented using Node.js and Express.js.
-The backend communicates with a MongoDB database for storing book and user information. 
-The server exposes a RESTful API that the client can interact with to perform various operations.
-
-## Usage
+## Setup
 ### 1) Clone the Repository
 ```bash
 $ git clone https://github.com/000emanresu111/book-rental-app.git
@@ -28,10 +23,6 @@ $ npm install
 $ npm run start
 ```
 This will run both the backend server on port 3000 and the MongoDB instance on port 27017.
-  
-```bash
-$ npm start
-```
 
 ```bash
 > book-rental-app@1.0.0 start
@@ -80,10 +71,11 @@ $ npm test
 ```
 
 ## API endpoints documentation
+Once the app is up and running (locally or via Docker), you can access the API documentation and swagger at http://localhost:3000/doc.
 
-Once the app is up and running (locally or via Docker), you can access the API documentation and swagger at http://localhost:3000/docs.
-
-## Example 
+## Usage example 
+You can use the following examples to test the API endpoints.
+You may perform the requests using a tool such as Postman or cURL, or alternatevely you can use the Swagger UI at http://localhost:3000/doc.
 
 ### Register a new user
 
@@ -158,3 +150,33 @@ curl -X POST http://localhost:3000/books/64b517ff0dad56bdcd2c2f3b/rent -H 'Conte
 ```json
 {"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NGI1MDJmZjMzMjZiZWY2NDI4NTE0YzQiLCJpYXQiOjE2ODk1ODQ3NTgsImV4cCI6MTY4OTU4ODM1OH0.BDXtbv3ZmBJWutfeyNpvzKaqindrlz7OWtVs67R9laA"}
 ```
+
+## Project description
+### System Architecture
+The Book Rental app backend is implemented using Node.js and Express.js.
+The backend communicates with a MongoDB database for storing book and user information. 
+The server exposes a RESTful API that the client can interact with to perform various operations.
+
+### Features description
+- 1. User Authentication and Authorization
+This is implemented via JWT tokens. 
+When a user registers, a JWT token is generated and returned to the client.
+The client must then include this token in the Authorization header of all subsequent requests.
+The server will then verify the token and allow or deny access to the requested resource.
+
+- 2. Books
+Race conditions to prevent multiple users from renting the same book at the same time are handled by using MongoDB transactions.
+Also atomic operations (such as findOneAndUpdate) could be used to ensure that the quantity of a book is updated correctly. 
+
+- 3. Rentals
+Users cannot rent a book if all copies are rented out or rent more than one copy of the same book at the same time.
+This has been achieved using another colleciton (Rentals) that keeps track of all the rentals.
+In-memory caching could be used to improve performance and reduce the number of database queries.
+Exploiting database indexes could also improve performance.
+Moreover the Rentals collection could be partitioned by tenantId to improve scalability.
+Finally Redis could be used to implement a distributed cache.
+
+- 4. Search
+Users can search for a book based on its title or author.
+
+
