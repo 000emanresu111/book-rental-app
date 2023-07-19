@@ -181,15 +181,6 @@ For example 64b7863efcd96b314d04d2a9.
 POST http://localhost:3000/books/:bookId/return
 ```
 
-```json
-{
-  "title": "Book 1",
-  "author": "Author 1",
-  "quantity": 5,
-  "bookstoreId": "bookstore1"
-}
-```
-
 ```bash
 curl -X POST http://localhost:3000/books/64b7863efcd96b314d04d2a9/return -H 'Content-Type: application/json' -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NGI2NjcwMDRiZGI2ZmRkNzRmODIzOTAiLCJpYXQiOjE2ODk2NzY0NjUsImV4cCI6MTY4OTc2Mjg2NX0.piE0n1e59urEgo5Qx0w3mZv7IddvuzUYCvSkFyz9o6c'
 ```
